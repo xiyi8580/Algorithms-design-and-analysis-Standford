@@ -22,3 +22,72 @@ answer in the following space.)
 best test cases to the discussion forums to help your fellow students!]
 
 **/
+package com.company;
+
+import java.util.Arrays;
+
+public class Main {
+
+    public static void main(String[] args) {
+	// write your code here
+    }
+
+    public static long SortAndCountInversions(int[] arr){
+        //base case
+        if (arr.length == 1)
+            return 0;
+        //left part of array
+        int[] left = Arrays.copyOfRange(arr, 0, arr.length / 2);
+
+        //right part of array
+        int[] right = Arrays.copyOfRange(arr, arr.length/2 , arr.length);
+
+        //divide and conquer
+        long x = SortAndCountInversions(left);
+        long y = SortAndCountInversions(right);
+
+        //modify merge process of merge sort to count split inversions
+        long z = MergeAndCountSplitInversion(arr,left,right);
+
+        return x + y + z;
+    }
+
+    public static long MergeAndCountSplitInversion(int[] nums, int[] left, int[] right){
+
+        long count = 0;
+        int i = 0; //index for left sub array
+        int j = 0; //index for right sub array
+        int k = 0;
+
+        while(i < left.length && j < right.length) {
+            if(left[i] < right[j]) {
+                //no inversion , just put left[i] back to nums
+                nums[k] = nums[i];
+                k++;
+                i++;
+            }
+            else{
+                //if the right[j] is smaller than left[i]
+                //number of inversion equals to the rest number on left subarray
+                //that is left.length - i
+                nums[k] = right[j];
+                k++;
+                j++;
+                count += left.length-i;
+            }
+
+            //in case there are still have numbers left in left or right side, put them into original array
+            while(i < left.length){
+                nums[k++] = left[i++];
+            }
+            while(j < right.length){
+                nums[k++] = right[j++];
+            }
+            return count;
+        }
+
+
+        return 0;
+    }
+
+}
