@@ -25,23 +25,24 @@ best test cases to the discussion forums to help your fellow students!]
 
 package com.company;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Main {
-
-    public static void main(String[] args) {
-	// write your code here
-    }
 
     public static long SortAndCountInversions(int[] arr){
         //base case
         if (arr.length == 1)
             return 0;
         //left part of array
-        int[] left = Arrays.copyOfRange(arr, 0, arr.length / 2);
+        int[] left = Arrays.copyOfRange(arr, 0, (arr.length / 2));
 
         //right part of array
-        int[] right = Arrays.copyOfRange(arr, arr.length/2 , arr.length);
+        int[] right = Arrays.copyOfRange(arr, (arr.length/2) , arr.length);
 
         //divide and conquer
         long x = SortAndCountInversions(left);
@@ -53,44 +54,80 @@ public class Main {
         return x + y + z;
     }
 
-    public static long MergeAndCountSplitInversion(int[] nums, int[] left, int[] right){
+    public static long MergeAndCountSplitInversion(int[] nums, int[] left, int[] right) {
 
         long count = 0;
         int i = 0; //index for left sub array
         int j = 0; //index for right sub array
         int k = 0;
 
-        while(i < left.length && j < right.length) {
-            if(left[i] < right[j]) {
+        while (i < left.length && j < right.length) {
+            if (left[i] < right[j]) {
                 //no inversion , just put left[i] back to nums
-                nums[k] = nums[i];
+                nums[k] = left[i];
                 k++;
                 i++;
-            }
-            else{
+            } else {
                 //if the right[j] is smaller than left[i]
                 //number of inversion equals to the rest number on left subarray
                 //that is left.length - i
                 nums[k] = right[j];
                 k++;
                 j++;
-                count += left.length-i;
-            }
 
-            //in case there are still have numbers left in left or right side, put them into original array
-            while(i < left.length){
+                count += left.length - i;
+            }
+        }
+            //in case there are still numbers remain in left or right side, put them into original array
+            while (i < left.length) {
                 nums[k++] = left[i++];
             }
-            while(j < right.length){
+            while (j < right.length) {
                 nums[k++] = right[j++];
             }
-            return count;
+        return count;
         }
 
 
-        return 0;
+    //read files
+    public static int[] fileToArray(String fileName) throws IOException{
+        //open necessary objects to read file contents
+        FileReader fileReader = new FileReader(fileName);
+        BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+        //ArrayList to store the file contents
+        List<Integer> entries = new ArrayList<Integer>();
+
+        //store each line of the file in ArrayList after converting to an int
+        String line = bufferedReader.readLine();
+        while(line != null){
+            entries.add(Integer.parseInt(line));
+            line = bufferedReader.readLine();// get next line
+        }
+
+        bufferedReader.close();
+        return arrayListToArray(entries);
     }
 
+    public static int[] arrayListToArray(List<Integer> a){
+        int[] result = new int[a.size()];
+
+        //put each Integer object into int and store into new array
+
+        for(int i = 0; i < a.size(); i++){
+            result[i] = a.get(i);
+        }
+        return result;
+    }
+
+    public static void main(String[] args) throws IOException{
+        // write your code here
+        String fileName = "C:\\Users\\Xiaojun Yin\\Desktop\\ScalaProjects\\countInversion\\IntegerArray.txt";
+        int[] nums = fileToArray(fileName);
+        long inversions = SortAndCountInversions(nums);
+        System.out.println(inversions);
+    }
 }
+
 
 
